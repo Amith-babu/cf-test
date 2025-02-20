@@ -6,8 +6,8 @@
  * @returns {String} - The GraphQL query string.
  */
 export const getMetaobjectsQuery = `
-  query FetchMetaobjectByType($type: String!) {
-    metaobjects(type: $type) {
+  query FetchMetaobjectByType($first: Int, $type: String!) {
+    metaobjects(first: $first, type: $type) {
       edges {
         node {
           id

@@ -40,10 +40,10 @@ export async function getMetaobjects(env) {
     ) {
       response = result.data.metaobjects.edges.map((edge) => {
         const idField = edge.node.fields.find(
-          (field) => field.key === "salesperson_id"
+          (field) => field.key === "SalesAgentID"
         );
         const nameField = edge.node.fields.find(
-          (field) => field.key === "salesperson_name"
+          (field) => field.key === "SalesAgentName"
         );
         return {
           id: idField ? idField.value : null,

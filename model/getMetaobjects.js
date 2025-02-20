@@ -62,6 +62,5 @@ export async function getMetaobjects(env) {
       hasNextPage = false;
     }
   }
-
   return response;
 }

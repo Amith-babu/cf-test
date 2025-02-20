@@ -30,8 +30,6 @@ export async function getMetaobjects(env) {
     } catch (error) {
       console.error("Error executing GraphQL query:", error);
     }
-
-    // Process the result to extract metaobjects
     if (
       result &&
       result.data &&

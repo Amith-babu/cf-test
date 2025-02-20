@@ -22,7 +22,6 @@ export async function getMetaobjects(env) {
         body: JSON.stringify({
           query: getMetaobjectsQuery,
           variables: {
-            first: 10,
             type: "sales-agents",
           },
         }),

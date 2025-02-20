@@ -8,59 +8,53 @@ import { getMetaobjectsQuery } from "./query.js";
  */
 export async function getMetaobjects(env) {
   let response = [];
-  let hasNextPage = true;
-  let after = null;
+  try {
+    let result = null;
 
-  while (hasNextPage) {
+    // Fetch metaobjects from Shopify API using GraphQL query
     try {
-      const result = await fetch("YOUR_GRAPHQL_ENDPOINT", {
+      result = await fetch(`${env.SHOP_URL}/admin/api/graphql.json`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Shopify-Access-Token": env.API_KEY,
         },
         body: JSON.stringify({
           query: getMetaobjectsQuery,
           variables: {
+            first: 250,
             type: "sales-agents",
-            after: after,
           },
         }),
       }).then((res) => res.json());
-
-      if (
-        result &&
-        result.data &&
-        result.data.metaobjects &&
-        result.data.metaobjects.edges
-      ) {
-        response = response.concat(
-          result.data.metaobjects.edges.map((edge) => {
-            const idField = edge.node.fields.find(
-              (field) => field.key === "SalesAgentID"
-            );
-            const nameField = edge.node.fields.find(
-              (field) => field.key === "SalesAgentName"
-            );
-            return {
-              id: idField ? idField.value : null,
-              name: nameField ? nameField.value : null,
-            };
-          })
-        );
-
-        hasNextPage = result.data.metaobjects.pageInfo.hasNextPage;
-        after = result.data.metaobjects.edges.length
-          ? result.data.metaobjects.edges[
-              result.data.metaobjects.edges.length - 1
-            ].cursor
-          : null;
-      } else {
-        hasNextPage = false;
-      }
     } catch (error) {
       console.error("Error executing GraphQL query:", error);
-      hasNextPage = false;
     }
+
+    // Process the result to extract metaobjects
+    if (
+      result &&
+      result.data &&
+      result.data.metaobjects &&
+      result.data.metaobjects.edges
+    ) {
+      response = result.data.metaobjects.edges.map((edge) => {
+        console.log(edge.node.fields);
+        const idField = edge.node.fields.find(
+          (field) => field.key === "salesagent_id"
+        );
+        const nameField = edge.node.fields.find(
+          (field) => field.key === "salesagent_name"
+        );
+        return {
+          id: idField ? idField.value.trim() : null,
+          name: nameField ? nameField.value.trim() : null,
+        };
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching metaobjects:", error);
   }
+
   return response;
 }

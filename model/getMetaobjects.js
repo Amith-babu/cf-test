@@ -23,7 +23,7 @@ export async function getMetaobjects(env) {
           query: getMetaobjectsQuery,
           variables: {
             first: 10,
-            type: "sales_persons",
+            type: "sales-agents",
           },
         }),
       }).then((res) => res.json());

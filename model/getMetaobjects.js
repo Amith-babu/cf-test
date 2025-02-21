@@ -39,15 +39,20 @@ export async function getMetaobjects(env) {
       result.data.metaobjects.edges
     ) {
       response = result.data.metaobjects.edges.map((edge) => {
+        console.log(edge.node.fields);
         const idField = edge.node.fields.find(
           (field) => field.key === "salesagent_id"
         );
         const nameField = edge.node.fields.find(
           (field) => field.key === "salesagent_name"
         );
+        const stafField = edge.node.fields.find(
+          (field) => field.key === "staffid"
+        );
         return {
-          id: idField ? idField.value.trim() : null,
+          id: idField ? idField.value : null,
           name: nameField ? nameField.value.trim() : null,
+          staffId: stafField ? stafField.value : null,
         };
       });
     }

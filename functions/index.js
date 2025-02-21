@@ -15,9 +15,16 @@ async function process(context) {
   const envData = await context.env;
   try {
     const response = await getMetaobjects(envData);
-    return new Response(JSON.stringify(response), {
-      headers: { "Content-Type": "application/json" },
-    });
+    if (response && response.length > 0) {
+      return new Response(JSON.stringify(response), {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      });
+    } else {
+      return new Response("No metaobjects found", {
+        status: 404,
+      });
+    }
   } catch (error) {
     console.error("Error fetching metaobjects:", error);
     return new Response("Error fetching metaobjects", { status: 500 });

@@ -13,8 +13,17 @@ export const onRequestGet = [process];
  */
 async function process(context) {
   const envData = await context.env;
+  const requestOrigin = context.request.headers.get("Origin");
+  //REQUEST_ORGIN=https://extensions.shopifycdn.com
+  if (!(await checkOrigin(env.REQUEST_ORGIN, requestOrigin))) {
+    return new Response("Authentication Error : Invalid Origin", {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": requestOrigin,
     "Content-Type": "application/json",
   };
 
@@ -37,5 +46,20 @@ async function process(context) {
       headers: corsHeaders,
       status: 500,
     });
+  }
+}
+
+/**
+ * Function to check the origin of the request.
+ * @param {string} shopifyStore
+ * @param {string} origin
+ * @returns {boolean}
+ */
+async function checkOrigin(shopifyStore, origin) {
+  try {
+    return shopifyStore === origin;
+  } catch (error) {
+    console.error("Error checking origin:", error);
+    return false;
   }
 }

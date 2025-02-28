@@ -46,7 +46,6 @@ export async function getMetaobjects(env) {
       ) {
         response = response.concat(
           result.data.metaobjects.edges.map((edge) => {
-            console.log(edge.node.fields);
             const idField = edge.node.fields.find(
               (field) => field.key === "salesagent_id"
             );
